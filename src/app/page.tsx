@@ -1,4 +1,4 @@
-import { Codepen } from "lucide-react";
+import { Codepen, Github } from "lucide-react";
 import { Grid } from "./(components)/Grid";
 import { ButtonCopy } from "./(components)/ButtonCopy";
 import { BoxCompletion } from "./(components)/BoxCompletion";
@@ -73,7 +73,12 @@ export default function Home() {
           <div className="flex flex-col gap-2">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between items-start gap-4">
               <div className="text-4xl font-bold">ReactGravityScroll</div>
-              <ButtonCopy />
+              <div className="flex items-center gap-2 flex-row-reverse md:flex-row">
+                <ButtonCopy />
+                <a href="https://github.com/marcoripa96/react-gravity-scroll">
+                  <Github className="w-5 h-5" />
+                </a>
+              </div>
             </div>
 
             <p className="text-black/50 text-xl">
@@ -156,7 +161,7 @@ export default function Home() {
         <div className="flex items-center justify-center">
           <Symbols />
         </div>
-        <div className="flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center">
           <Sign />
         </div>
       </div>
