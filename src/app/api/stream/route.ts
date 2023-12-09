@@ -9,10 +9,10 @@ export async function GET() {
   //       encoding: "utf-8",
   //     }
   //   );
-  const iterator = tokenize(
-    "From that day on, Sir Arthur continued to protect the kingdom, but he never forgot the magical adventure that had taught him the true meaning of courage and love for nature. And so, his legend lived on, inspiring generations to come."
-  );
-  const stream = iteratorToStream(iterator);
+  //   const iterator = tokenize(
+  //     "From that day on, Sir Arthur continued to protect the kingdom, but he never forgot the magical adventure that had taught him the true meaning of courage and love for nature. And so, his legend lived on, inspiring generations to come."
+  //   );
+  //   const stream = iteratorToStream(iterator);
 
-  return new Response(stream);
+  return new Response("Hello, world!");
 }
