@@ -4,7 +4,7 @@ export const runtime = "edge";
 
 const endpoint =
   process.env.NODE_ENV === "production"
-    ? `https://${process.env.VERCEL_URL}`
+    ? `https://react-gravity-scroll-docs.vercel.app`
     : `http://localhost:3000`;
 
 export async function GET() {
