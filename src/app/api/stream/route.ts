@@ -1,10 +1,14 @@
 import { iteratorToStream, tokenize } from "@/lib/stream/buildStream";
-import fs from "fs";
+import fs from "fs/promises";
+import path from "path";
 
-export function GET() {
-  const file = fs.readFileSync(process.cwd() + "/public/vercel.svg", {
-    encoding: "utf-8",
-  });
+export async function GET() {
+  const file = await fs.readFile(
+    path.resolve(process.cwd(), "public", "text.txt"),
+    {
+      encoding: "utf-8",
+    }
+  );
   const iterator = tokenize(file);
   const stream = iteratorToStream(iterator);
 
