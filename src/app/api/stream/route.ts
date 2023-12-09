@@ -8,6 +8,7 @@ const endpoint =
     : `http://localhost:3000`;
 
 export async function GET() {
+  console.log(`${endpoint}/text.txt`);
   const res = await fetch(`${endpoint}/text.txt`);
 
   if (!res.ok) {
