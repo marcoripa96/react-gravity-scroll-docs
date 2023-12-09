@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { StreamedResponse, StreamedResponseItem } from "./types";
+import { tokenize } from "./buildStream";
 
 export function useStream() {
   const [completion, setCompletion] = useState("");
@@ -44,27 +45,40 @@ export function useStream() {
         throw new Error("The response body is empty.");
       }
 
+      const txt = (await res.json()).text as string;
+      const iterator = tokenize(txt);
+
       let result = "";
-      const reader = res.body.getReader();
 
-      const decoder = new TextDecoder();
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) {
-          break;
-        }
-
-        // Update the completion state with the new message tokens.
-        result += decoder.decode(value);
+      for await (const token of iterator) {
+        result += token;
         setCompletion(result);
 
-        // The request has been aborted, stop reading the stream.
         if (abortController === null) {
-          reader.cancel();
           break;
         }
       }
+
+      // const reader = res.body.getReader();
+
+      // const decoder = new TextDecoder();
+
+      // while (true) {
+      //   const { done, value } = await reader.read();
+      //   if (done) {
+      //     break;
+      //   }
+
+      //   // Update the completion state with the new message tokens.
+      //   result += decoder.decode(value);
+      //   setCompletion(result);
+
+      //   // The request has been aborted, stop reading the stream.
+      //   if (abortController === null) {
+      //     reader.cancel();
+      //     break;
+      //   }
+      // }
 
       setAbortController(null);
       return result;

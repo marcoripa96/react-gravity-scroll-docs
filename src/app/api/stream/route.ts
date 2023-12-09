@@ -1,22 +1,23 @@
 import { iteratorToStream, tokenize } from "@/lib/stream/buildStream";
+import fs from "fs/promises";
+import { NextResponse } from "next/server";
+import path from "path";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
-const endpoint =
-  process.env.NODE_ENV === "production"
-    ? `https://react-gravity-scroll-docs.vercel.app`
-    : `http://localhost:3000`;
+// const text
 
 export async function GET() {
-  console.log(`${endpoint}/text.txt`);
-  const res = await fetch(`${endpoint}/text.txt`);
+  const file = await fs.readFile(
+    path.resolve(process.cwd(), "public", "text.txt"),
+    {
+      encoding: "utf-8",
+    }
+  );
+  //   const iterator = tokenize(file);
+  //   const stream = iteratorToStream(iterator);
 
-  if (!res.ok) {
-    return new Response(res.statusText, { status: res.status });
-  }
-
-  const iterator = tokenize(await res.text());
-  const stream = iteratorToStream(iterator);
-
-  return new Response(stream);
+  return NextResponse.json({
+    text: file,
+  });
 }
