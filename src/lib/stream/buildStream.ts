@@ -1,68 +1,40 @@
-import { StreamedResponse } from "./types";
+export async function* tokenize(text: string) {
+  let currentIndex = 0;
 
-const generateGUID = () =>
-  "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0;
-    return (c === "x" ? r : (r & 0x3) | 0x8).toString();
-  });
+  while (currentIndex < text.length) {
+    // Determine the length of the next chunk (1 to 3 characters)
+    const chunkLength = Math.min(
+      1 + Math.floor(Math.random() * 3),
+      text.length - currentIndex
+    );
 
-const _streamingRequests: Record<
-  string,
-  {
-    id: string;
-    status: "pending" | "fulfilled" | "rejected";
-    promise: Promise<unknown>;
-    data: unknown | null;
-  }[]
-> = {};
+    // Extract the chunk and add it to the tokens array
+    const chunk = text.substring(currentIndex, currentIndex + chunkLength);
+    yield chunk;
 
-function getCurrentStreamingState<T>(id: string) {
-  if (!_streamingRequests[id]) {
-    return {
-      id,
-      items: [],
-      next: null,
-    };
+    await sleep(10);
+
+    // Move to the next chunk
+    currentIndex += chunkLength;
   }
-  const items = _streamingRequests[id].map(({ id, data, status }) => ({
-    id,
-    status,
-    data: data as T | null,
-  }));
-  return {
-    id,
-    items,
-    next: items.map(({ data }) => data).includes(null) ? next : null,
-  };
 }
 
-async function next<T>(id: string): Promise<StreamedResponse<T>> {
-  "use server";
-  return getCurrentStreamingState(id);
+export function iteratorToStream(iterator: any) {
+  return new ReadableStream({
+    async pull(controller) {
+      const { value, done } = await iterator.next();
+
+      if (done) {
+        controller.close();
+      } else {
+        controller.enqueue(value);
+      }
+    },
+  });
 }
 
-export async function buildStreamedResponse<T>(
-  items: {
-    id: string;
-    promise: Promise<T>;
-  }[]
-): Promise<StreamedResponse<T>> {
-  const id = generateGUID();
-
-  _streamingRequests[id] = items.map((item, index) => ({
-    id: item.id,
-    status: "pending",
-    promise: item.promise
-      .then((data) => {
-        _streamingRequests[id][index].status = "fulfilled";
-        _streamingRequests[id][index].data = data;
-        return data;
-      })
-      .catch((e) => {
-        _streamingRequests[id][index].status = "rejected";
-      }) as Promise<T>,
-    data: null,
-  }));
-
-  return getCurrentStreamingState(id);
+function sleep(time: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
 }
