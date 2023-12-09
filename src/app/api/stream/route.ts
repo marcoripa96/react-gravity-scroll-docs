@@ -2,9 +2,7 @@ import { iteratorToStream, tokenize } from "@/lib/stream/buildStream";
 import fs from "fs/promises";
 import path from "path";
 
-export const config = {
-  runtime: "edge",
-};
+export const runtime = "edge";
 
 export async function GET() {
   const file = await fs.readFile(
