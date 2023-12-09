@@ -7,6 +7,7 @@ import { myTheme } from "@/lib/codeHighlightTheme";
 import { Card } from "./(components)/Card";
 import { Symbols } from "./(components)/Symbols";
 import { Sign } from "./(components)/Sign";
+import Image from "next/image";
 
 Code.theme = myTheme;
 
@@ -72,7 +73,17 @@ export default function Home() {
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-2">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between items-start gap-4">
-              <div className="text-4xl font-bold">ReactGravityScroll</div>
+              <div className="flex items-center">
+                <Image
+                  src="/logo.png"
+                  width={1024}
+                  height={1024}
+                  alt=""
+                  className="w-12 h-12"
+                />
+                <div className="text-4xl font-bold">RGScroll</div>
+              </div>
+
               <div className="flex items-center gap-2 flex-row-reverse md:flex-row">
                 <ButtonCopy />
                 <a href="https://github.com/marcoripa96/react-gravity-scroll">
@@ -82,8 +93,8 @@ export default function Home() {
             </div>
 
             <p className="text-black/50 text-xl">
-              A simple component and hook to keep your container anchored to the
-              bottom.
+              React Gravity Scroll is a simple component and hook to keep your
+              container anchored to the bottom.
             </p>
           </div>
 
