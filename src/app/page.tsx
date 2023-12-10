@@ -135,7 +135,7 @@ export default function Home() {
         <div className="flex flex-col gap-3">
           <h3 className="text-2xl font-medium">Quick start</h3>
           <p className="text-black/50">
-            ReactGravityScroll ships with a pre-build{" "}
+            ReactGravityScroll ships with a pre-built{" "}
             <span className="bg-white/60 rounded-md px-1 italic">
               GravityScrollArea
             </span>{" "}
