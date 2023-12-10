@@ -49,7 +49,12 @@ export function BoxCompletion() {
           {thresholds.map((threshold, index) => (
             <div
               key={index}
-              className="md:w-20 w-16 relative h-full items-center"
+              className={cn(
+                "md:w-20 w-16 relative h-full items-center rounded-lg transition-colors",
+                {
+                  "hover:bg-black/5": scrollThreshold !== index,
+                }
+              )}
             >
               <button
                 onClick={() => setScrollThreshold(index)}

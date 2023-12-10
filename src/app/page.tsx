@@ -115,7 +115,7 @@ export default function Home() {
               <span className="w-6 h-6 bg-black/5 rounded-full flex items-center justify-center">
                 <Codepen className="w-4 h-4 text-black/50" />
               </span>
-              <span>Blazingly fast</span>
+              <span>Headless</span>
             </div>
             <div className="flex flex-row items-center gap-2">
               <span className="w-6 h-6 bg-black/5 rounded-full flex items-center justify-center">

@@ -1,24 +1,23 @@
-export async function* tokenize(text: string) {
+export async function* tokenize(text: string, batchSize = 10) {
   let currentIndex = 0;
 
   while (currentIndex < text.length) {
-    // Determine the length of the next chunk (1 to 3 characters)
-    const chunkLength = Math.min(
-      1 + Math.floor(Math.random() * 3),
-      text.length - currentIndex
-    );
+    let batch = "";
 
-    // Extract the chunk and add it to the tokens array
-    const chunk = text.substring(currentIndex, currentIndex + chunkLength);
-    yield chunk;
+    for (let i = 0; i < batchSize && currentIndex < text.length; i++) {
+      const chunkLength = Math.min(
+        1 + Math.floor(Math.random() * 3),
+        text.length - currentIndex
+      );
+      const chunk = text.substring(currentIndex, currentIndex + chunkLength);
+      batch += chunk;
+      currentIndex += chunkLength;
+      await sleep(10);
+    }
 
-    await sleep(10);
-
-    // Move to the next chunk
-    currentIndex += chunkLength;
+    yield batch;
   }
 }
-
 export function iteratorToStream(iterator: any) {
   return new ReadableStream({
     async pull(controller) {

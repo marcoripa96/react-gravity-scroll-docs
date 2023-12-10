@@ -45,40 +45,42 @@ export function useStream() {
         throw new Error("The response body is empty.");
       }
 
-      const txt = (await res.json()).text as string;
-      const iterator = tokenize(txt);
+      let result: string = "";
 
-      let result = "";
+      // const txt = (await res.json()).text as string;
+      // const iterator = tokenize(txt, 1);
 
-      for await (const token of iterator) {
-        result += token;
-        setCompletion(result);
+      // let result: string[] = [];
 
-        if (abortController === null) {
-          break;
-        }
-      }
+      // for await (const tokens of iterator) {
+      //   result.push(tokens);
+      //   setCompletion(result.join(""));
 
-      // const reader = res.body.getReader();
-
-      // const decoder = new TextDecoder();
-
-      // while (true) {
-      //   const { done, value } = await reader.read();
-      //   if (done) {
-      //     break;
-      //   }
-
-      //   // Update the completion state with the new message tokens.
-      //   result += decoder.decode(value);
-      //   setCompletion(result);
-
-      //   // The request has been aborted, stop reading the stream.
       //   if (abortController === null) {
-      //     reader.cancel();
       //     break;
       //   }
       // }
+
+      const reader = res.body.getReader();
+
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          break;
+        }
+
+        // Update the completion state with the new message tokens.
+        result += decoder.decode(value);
+        setCompletion(result);
+
+        // The request has been aborted, stop reading the stream.
+        if (abortController === null) {
+          reader.cancel();
+          break;
+        }
+      }
 
       setAbortController(null);
       return result;
