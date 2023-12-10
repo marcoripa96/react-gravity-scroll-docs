@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { Variants, motion } from "framer-motion";
 import { Github } from "lucide-react";
 import { useInView } from "react-intersection-observer";
 
@@ -16,12 +16,14 @@ const variantsSign = {
   },
 };
 
-const variantsGithub = {
-  hidden: { opacity: 0 },
+const variantsGithub: Variants = {
+  hidden: { opacity: 0, filter: "blur(10px)" },
   visible: {
     opacity: 1,
+    filter: "blur(0px)",
     transition: {
-      opacity: { delay: 1.3 },
+      delay: 1.2,
+      duration: 0.4,
     },
   },
 };
@@ -30,7 +32,7 @@ export function Sign() {
   const { ref, inView } = useInView({ threshold: 0.7 });
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-4">
       <svg
         ref={ref}
         className="w-20 h-20"
@@ -48,14 +50,16 @@ export function Sign() {
           animate={inView ? "visible" : "hidden"}
         />
       </svg>
-      <motion.span
+
+      <motion.a
         initial="hidden"
-        className="flex items-center gap-2"
         variants={variantsGithub}
         animate={inView ? "visible" : "hidden"}
+        className="px-2 py-1 bg-black flex items-center text-white rounded-full"
+        href="https://github.com/marcoripa96/react-gravity-scroll-docs"
       >
-        <Github /> Docs repo
-      </motion.span>
+        <Github className="text-white" /> Docs repo
+      </motion.a>
     </div>
   );
 }

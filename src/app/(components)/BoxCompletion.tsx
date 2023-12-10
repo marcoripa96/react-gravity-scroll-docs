@@ -5,7 +5,7 @@ import { GravityScroll } from "./GravityScroll";
 import Markdown from "react-markdown";
 import { Card } from "./Card";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { RotateCw } from "lucide-react";
 
@@ -13,9 +13,22 @@ const thresholds = ["20%", "40%", "100%"];
 const autoScrollMode = ["auto", false, true];
 
 export function BoxCompletion() {
-  const { completion, loading, refetch } = useStream();
+  const { completion, loading, refetch } = useStream({
+    enabled: false,
+    initialText: "Generating...",
+  });
   const [autoScroll, setAutoScroll] = useState(0);
   const [scrollThreshold, setScrollThreshold] = useState(0);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      refetch();
+    }, 1000);
+
+    return () => {
+      timeout && clearTimeout(timeout);
+    };
+  }, []);
 
   const autoScrollEnabled =
     autoScrollMode[autoScroll] === "auto"

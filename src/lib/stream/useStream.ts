@@ -3,8 +3,15 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { StreamedResponse, StreamedResponseItem } from "./types";
 import { tokenize } from "./buildStream";
 
-export function useStream() {
-  const [completion, setCompletion] = useState("");
+type UseStreamProps = {
+  enabled?: boolean;
+  initialText?: string;
+};
+
+export function useStream(
+  props: UseStreamProps = { enabled: true, initialText: "" }
+) {
+  const [completion, setCompletion] = useState(props.initialText);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | undefined>();
   const [abortController, setAbortController] =
@@ -26,7 +33,9 @@ export function useStream() {
       setAbortController(abortController);
 
       // Empty the completion immediately.
-      setCompletion("");
+      if (!props.initialText || completion !== props.initialText) {
+        setCompletion("");
+      }
 
       const res = await fetch("/api/stream", {
         method: "GET",
@@ -47,22 +56,7 @@ export function useStream() {
 
       let result: string = "";
 
-      // const txt = (await res.json()).text as string;
-      // const iterator = tokenize(txt, 1);
-
-      // let result: string[] = [];
-
-      // for await (const tokens of iterator) {
-      //   result.push(tokens);
-      //   setCompletion(result.join(""));
-
-      //   if (abortController === null) {
-      //     break;
-      //   }
-      // }
-
       const reader = res.body.getReader();
-
       const decoder = new TextDecoder();
 
       while (true) {
@@ -99,8 +93,11 @@ export function useStream() {
   }, []);
 
   useEffect(() => {
+    if (!props.enabled) {
+      return;
+    }
     refetch();
-  }, [refetch]);
+  }, [refetch, props.enabled]);
 
   return { completion, loading, error, refetch };
 }
