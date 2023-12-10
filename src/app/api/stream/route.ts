@@ -1,27 +1,20 @@
 import { iteratorToStream, tokenize } from "@/lib/stream/buildStream";
-import fs from "fs/promises";
-import { NextResponse } from "next/server";
 // import path from "path";
 
 export const runtime = "edge";
 
 export async function GET() {
-  const result = await fetch("https://jsonplaceholder.typicode.com/todos/1");
+  const endpoint =
+    process.env.NODE_ENV === "production"
+      ? `https://${process.env.VERCEL_URL}`
+      : "http://localhost:3000";
+
+  const result = await fetch(`${endpoint}/text.txt`);
 
   const text = await result.text();
-  // const file = await fs.readFile(
-  //   path.resolve(process.cwd(), "public", "text.txt"),
-  //   {
-  //     encoding: "utf-8",
-  //   }
-  // );
 
-  const tokens = tokenize(text, 1);
-
+  const tokens = tokenize(text);
   const stream = iteratorToStream(tokens);
 
-  // return NextResponse.json({
-  //   text: file,
-  // });
   return new Response(stream);
 }
